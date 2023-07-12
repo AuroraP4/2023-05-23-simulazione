@@ -187,7 +187,4 @@ public class People {
 		return nameFirst + " " + nameLast;
 	}
     
-    
-
 }
-

@@ -26,15 +26,10 @@ public class Team {
     private String name;
     private String park;
 
-    
-    
-    
-
     public Team(Integer iD, Integer year, String teamCode, String divID, Integer div_ID, Integer teamRank,
 			Integer games, Integer gamesHome, Integer wins, Integer losses, String divisionWinnner, String leagueWinner,
 			String worldSeriesWinnner, Integer runs, Integer hits, Integer homeruns, Integer stolenBases,
 			Integer hitsAllowed, Integer homerunsAllowed, String name, String park) {
-		super();
 		this.iD = iD;
 		this.year = year;
 		this.teamCode = teamCode;
@@ -58,8 +53,6 @@ public class Team {
 		this.park = park;
 	}
 
-    
-    
 	public Integer getID(){
         return iD;
     }
@@ -245,14 +238,10 @@ public class Team {
 		return Objects.equals(iD, other.iD);
 	}
 
-
-
 	@Override
 	public String toString() {
 		return teamCode;
 	}
     
-    
-
+   
 }
-

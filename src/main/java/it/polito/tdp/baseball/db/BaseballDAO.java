@@ -10,8 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 import it.polito.tdp.baseball.model.Appearances;
-import it.polito.tdp.baseball.model.Arco;
+//import it.polito.tdp.baseball.model.Arco;
 import it.polito.tdp.baseball.model.People;
+import it.polito.tdp.baseball.model.PlayersTeam;
 import it.polito.tdp.baseball.model.Team;
 
 
@@ -102,6 +103,107 @@ public class BaseballDAO {
 	}
 	
 	
+	public List<String> getVertices(int anno, double salario) {
+		String sql = "SELECT p.playerID, SUM(s.salary) AS salaryTOT "
+				+ "FROM people p, salaries s "
+				+ "WHERE p.playerID = s.playerID AND s.year = ? "
+				+ "GROUP BY p.playerID "
+				+ "HAVING salaryTOT>? ";
+		
+		List<String> result = new ArrayList<String>();
+
+		try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, anno);
+			st.setDouble(2, salario);
+			ResultSet rs = st.executeQuery();
+
+			while (rs.next()) {
+				result.add(rs.getString("playerID"));
+			}
+
+			conn.close();
+			return result;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Errore connessione al database");
+			throw new RuntimeException("Error Connection Database");
+		}
+		
+	}
+	
+	public List<People> getVertices2(int anno, double salario) {
+		String sql = "SELECT p.*, SUM(s.salary) AS salaryTOT "
+				+ "FROM people p, salaries s "
+				+ "WHERE p.playerID = s.playerID AND s.year = ? "
+				+ "GROUP BY p.playerID "
+				+ "HAVING salaryTOT>? ";
+		
+		List<People> result = new ArrayList<People>();
+
+		try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, anno);
+			st.setDouble(2, salario);
+			ResultSet rs = st.executeQuery();
+
+			while (rs.next()) {
+				result.add(new People (rs.getString("playerID"), 
+						rs.getString("birthCountry"), 
+						rs.getString("birthCity"), 
+						rs.getString("deathCountry"), 
+						rs.getString("deathCity"),
+						rs.getString("nameFirst"), 
+						rs.getString("nameLast"), 
+						rs.getInt("weight"), 
+						rs.getInt("height"), 
+						rs.getString("bats"), 
+						rs.getString("throws"),
+						getBirthDate(rs), 
+						getDebutDate(rs), 
+						getFinalGameDate(rs), 
+						getDeathDate(rs)));   }
+
+			conn.close();
+			return result;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Errore connessione al database");
+			throw new RuntimeException("Error Connection Database");
+		}	
+	}
+	
+	public List<PlayersTeam> getAppearences(int anno) {
+		String sql = "SELECT a.playerID, a.teamID "
+				+ "FROM appearances a "
+				+ "WHERE a.year = ? ";
+		
+		List<PlayersTeam> result = new ArrayList<PlayersTeam>();
+
+		try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, anno);
+			ResultSet rs = st.executeQuery();
+
+			while (rs.next()) {
+				result.add(new PlayersTeam(rs.getString("playerID"), rs.getInt("teamID")));
+			}
+
+			conn.close();
+			return result;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Errore connessione al database");
+			throw new RuntimeException("Error Connection Database");
+		}
+		
+	}
 	
 	
 	//=================================================================

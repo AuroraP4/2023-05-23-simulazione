@@ -45,19 +45,38 @@ public class FXMLController {
     @FXML
     private TextField txtYear;
 
-    
-    
     @FXML
     void doCalcolaConnesse(ActionEvent event) {
-    	
+    	this.txtResult.appendText("\nCi sono " + this.model.componentiConnesse() +
+    			" componenti connesse \n");
     }
 
-    
-    
     @FXML
     void doCreaGrafo(ActionEvent event) {
     	
+    	double salario = 0.0;
+    	int anno = 0;
+    	try {
+    	salario = Double.parseDouble(this.txtSalary.getText())*1000000;
+    	anno = Integer.parseInt(this.txtYear.getText()); }
+    	catch (NumberFormatException e){ 
+    		this.txtResult.setText("Il salario e l'anno devono essere valori numerici");
+    		return;
+    	}
+    	
+    	//check sull'anno tra il 1871 e 2019
+    	//check sul salario che sia positivo
+    	
+    	this.model.creaGrafo(anno, salario);
+    	this.txtResult.setText("Grafo creato");
+    	this.txtResult.appendText("Ci sono " + this.model.nVertices() + " vertici\n");
+    	this.txtResult.appendText("Ci sono " + this.model.nArchi() + " archi\n");
+    	
+      	this.btnGradoMassimo.setDisable(false);
+    	this.btnConnesse.setDisable(false);
+    	this.btnDreamTeam.setDisable(false);
     }
+    
 
     
     @FXML
@@ -68,7 +87,11 @@ public class FXMLController {
     
     @FXML
     void doGradoMassimo(ActionEvent event) {
-
+    	List<Grado> grado = model.gradoMassimo();
+    	this.txtResult.appendText("\nI vertici di grado massimo sono \n");
+    	for(Grado g: grado ) {
+    		this.txtResult.appendText(g.getPlayer() + " " + g.getGrado() + "\n");
+    	}
     }
 
     
