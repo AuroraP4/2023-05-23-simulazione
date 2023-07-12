@@ -68,8 +68,8 @@ public class FXMLController {
     	//check sul salario che sia positivo
     	
     	this.model.creaGrafo(anno, salario);
-    	this.txtResult.setText("Grafo creato");
-    	this.txtResult.appendText("Ci sono " + this.model.nVertices() + " vertici\n");
+    	this.txtResult.setText("Grafo creato!");
+    	this.txtResult.appendText("\nCi sono " + this.model.nVertices() + " vertici\n");
     	this.txtResult.appendText("Ci sono " + this.model.nArchi() + " archi\n");
     	
       	this.btnGradoMassimo.setDisable(false);
@@ -81,10 +81,24 @@ public class FXMLController {
     
     @FXML
     void doDreamTeam(ActionEvent event) {
-
+    	int anno = 0;
+    	try {
+    	anno = Integer.parseInt(this.txtYear.getText()); }
+    	catch (NumberFormatException e){ 
+    		this.txtResult.setText("L'anno deve essere un valor numerico");
+    		return;
+    	}
+    	this.model.calcolaDreamTeam(Integer.parseInt(this.txtYear.getText()));
+    	this.txtResult.appendText("\nIl dream team ha un salario di " + 
+    				this.model.getSalarioDreamTeam());
+    	this.txtResult.appendText("\nI giocatori sono \n");
+    	List<People> dreamTeam = model.getDreamTeam();
+    	for(People p: dreamTeam) {
+    		txtResult.appendText(p + "\n");
+    	}
     }
 
-    
+   
     @FXML
     void doGradoMassimo(ActionEvent event) {
     	List<Grado> grado = model.gradoMassimo();

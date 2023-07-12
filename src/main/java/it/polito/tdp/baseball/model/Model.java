@@ -22,6 +22,9 @@ public class Model {
 	private Map<String, People> playerIDMap;
 	private Map<Integer, Team> teamIDMap;
 	
+	private List<People> dreamTeam;
+	private double salarioDreamTeam;
+	
 	public Model() {
 		dao = new BaseballDAO();
 		this.playerIDMap = new HashMap<String, People>();
@@ -103,4 +106,46 @@ public class Model {
 		return this.grafo.vertexSet().size();
 	}
 	
+	public void calcolaDreamTeam(int anno) {
+		dreamTeam = new ArrayList<People>();
+		salarioDreamTeam = 0.0;
+		
+		List<People> rimanenti = new ArrayList<People>(grafo.vertexSet());
+		
+		ricorsione(new ArrayList<People>(), rimanenti, anno);  }
+	
+	private double getSalarioSquadra(ArrayList<People> players, int anno) {
+		double salarioTotale = 0.0;
+		for(People p: players) {
+			double salario = this.dao.getSalarioGiocatore(p, anno);
+			salarioTotale += salario; 	}
+		return salarioTotale;  }
+
+	private void ricorsione(ArrayList<People> parziale, List<People> rimanenti, int anno) {
+		//condizione di terminazione
+		if(rimanenti.isEmpty()) {
+			double salario = getSalarioSquadra(parziale, anno);
+			if(salario>this.salarioDreamTeam) {
+				this.salarioDreamTeam = salario;
+				this.dreamTeam = new ArrayList<People>(parziale);	}
+			return;
+		}
+		
+		//andiamo avanti ad aggiungere giocatori
+		List<People> compagniSquadra = Graphs.neighborListOf(grafo, rimanenti.get(0));
+		compagniSquadra.add(rimanenti.get(0));
+		List<People> nuovoRimanenti = new ArrayList<People>(rimanenti);
+		nuovoRimanenti.removeAll(compagniSquadra);
+		
+		for(People p: compagniSquadra) {
+			parziale.add(p);
+			ricorsione(parziale, nuovoRimanenti, anno);
+			parziale.remove(parziale.size()-1); }
+	}
+
+	public List<People> getDreamTeam() {
+		return this.dreamTeam; }
+	
+	public double getSalarioDreamTeam() {
+		return this.salarioDreamTeam; }
 }

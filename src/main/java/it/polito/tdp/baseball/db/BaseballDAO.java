@@ -205,6 +205,34 @@ public class BaseballDAO {
 		
 	}
 	
+	public double getSalarioGiocatore(People p, int anno) {
+		String sql = "SELECT s.playerID, SUM(s.salary) AS salaryTOT "
+				+ "FROM salaries s "
+				+ "WHERE s.playerID = ? AND s.year = ? "
+				+ "GROUP BY s.playerID ";
+		double result = 0.0;
+
+		try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			
+			st.setString(1, p.getPlayerID());
+			st.setInt(2, anno);
+			ResultSet rs = st.executeQuery();
+
+			while (rs.first()) {
+				result = rs.getDouble("salaryTOT");   }
+
+			conn.close();
+			return result;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Errore connessione al database");
+			throw new RuntimeException("Error Connection Database");
+		}
+		
+	}
 	
 	//=================================================================
 	//==================== HELPER FUNCTIONS   =========================
